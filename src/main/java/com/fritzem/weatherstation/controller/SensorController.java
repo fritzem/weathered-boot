@@ -1,10 +1,10 @@
-package com.fritzem.weatherstation;
+package com.fritzem.weatherstation.controller;
 
+import com.fritzem.weatherstation.SensorRepository;
 import com.fritzem.weatherstation.model.Sensor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class SensorController {
@@ -20,13 +20,24 @@ public class SensorController {
         return "This is the weather station. Beep boop.";
     }
 
+    /**
     @GetMapping("/temp")
     public Sensor sensor(@RequestParam(value = "temp", defaultValue = "") String temp) {
         return new Sensor(Integer.parseInt(temp));
+    } */
+
+    @GetMapping("/sensor/{id}")
+    public Sensor checkSensor(@PathVariable String id) {
+        return sensorRepository.findById(Long.parseLong(id));
     }
 
-    @GetMapping("/checkSensor")
-    public Sensor checkSensor(@RequestParam(value = "id", defaultValue = "0") String id) {
-        return sensorRepository.findById(Long.parseLong(id));
+    @PostMapping("/create") //RequestBody for raw json, ModelAttribute for form data
+    public Sensor create(@RequestBody Map<String, String> body) {
+        Sensor sensor = new Sensor(
+            body.get("country"),
+            body.get("city")
+        );
+        sensorRepository.save(sensor);
+        return sensor;
     }
 }

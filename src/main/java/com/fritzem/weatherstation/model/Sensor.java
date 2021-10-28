@@ -12,18 +12,22 @@ public class Sensor {
     @GeneratedValue
     private long id;
 
+    private String country;
+    private String city;
+
     private int temp = 65;
 
     protected Sensor() {} //For JPA
-    public Sensor(int temp) {
-        this.temp = temp;
+    public Sensor(String country, String city) {
+        this.country = country;
+        this.city = city;
     }
 
     public long getId() {
         return id;
     }
-
-    public int getNot() {
-        return 5;
+    public String getCountry() {
+        return country;
     }
+    public String getCity()  { return city; }
 }

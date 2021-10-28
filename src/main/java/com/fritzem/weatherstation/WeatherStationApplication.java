@@ -23,8 +23,8 @@ public class WeatherStationApplication {
             //repo.save(new Sensor(663));
             //repo.save(new Sensor(23));
 
-            log.info("HEY");
-            log.info(repo.findById(1L).toString());
+            //log.info("HEY");
+            //log.info(repo.findById(1L).toString());
         };
     }
 
