@@ -1,6 +1,8 @@
 package com.fritzem.weatherstation.controller;
 
-import com.fritzem.weatherstation.SensorRepository;
+import com.fritzem.weatherstation.model.Report;
+import com.fritzem.weatherstation.repository.ReportRepository;
+import com.fritzem.weatherstation.repository.SensorRepository;
 import com.fritzem.weatherstation.model.Sensor;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +12,11 @@ import java.util.Map;
 public class SensorController {
 
     final SensorRepository sensorRepository;
+    final ReportRepository reportRepository;
 
-    public SensorController(SensorRepository sensorRepository) {
+    public SensorController(SensorRepository sensorRepository, ReportRepository reportRepository) {
         this.sensorRepository = sensorRepository;
+        this.reportRepository = reportRepository;
     }
 
     @RequestMapping
@@ -26,7 +30,7 @@ public class SensorController {
         return new Sensor(Integer.parseInt(temp));
     } */
 
-    @GetMapping("/sensor/{id}")
+    @GetMapping("/{id}")
     public Sensor checkSensor(@PathVariable String id) {
         return sensorRepository.findById(Long.parseLong(id));
     }
@@ -39,5 +43,18 @@ public class SensorController {
         );
         sensorRepository.save(sensor);
         return sensor;
+    }
+
+    @PostMapping("/{id}/report")
+    public Report report(
+            @PathVariable String id,
+            @RequestBody Map<String, String> body) {
+        Report report = new Report(
+            sensorRepository.findById(Long.parseLong(id)),
+            Double.parseDouble(body.get("temperature")),
+            Double.parseDouble(body.get("humidity"))
+        );
+        reportRepository.save(report);
+        return report;
     }
 }

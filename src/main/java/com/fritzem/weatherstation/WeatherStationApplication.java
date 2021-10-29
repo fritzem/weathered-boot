@@ -1,5 +1,6 @@
 package com.fritzem.weatherstation;
 
+import com.fritzem.weatherstation.repository.SensorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

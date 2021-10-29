@@ -15,7 +15,6 @@ public class Sensor {
     private String country;
     private String city;
 
-    private int temp = 65;
 
     protected Sensor() {} //For JPA
     public Sensor(String country, String city) {
@@ -30,4 +29,6 @@ public class Sensor {
         return country;
     }
     public String getCity()  { return city; }
+
+
 }

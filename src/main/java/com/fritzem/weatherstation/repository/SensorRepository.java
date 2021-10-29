@@ -1,4 +1,4 @@
-package com.fritzem.weatherstation;
+package com.fritzem.weatherstation.repository;
 
 import com.fritzem.weatherstation.model.Sensor;
 import org.springframework.data.jpa.repository.JpaRepository;
