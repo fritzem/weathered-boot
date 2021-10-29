@@ -62,3 +62,13 @@ Caused by: org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException: Wrong user name
 2021-10-27 23:52:19 jdbc[14]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM SENSOR ID SENSOR[*]"; SQL statement:
 SELECT * FROM SENSOR ID SENSOR [42000-200]
+2021-10-28 20:44:36 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SENSOR
+DROP TABLE[*] TEMP"; expected "identifier"; SQL statement:
+ALTER TABLE SENSOR
+DROP TABLE TEMP [42001-200]
+2021-10-28 20:44:49 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE SENSOR
+DROP TABLE[*] TEMP"; expected "identifier"; SQL statement:
+ALTER TABLE SENSOR
+DROP TABLE TEMP [42001-200]
