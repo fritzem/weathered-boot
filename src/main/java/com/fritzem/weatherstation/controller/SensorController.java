@@ -1,15 +1,16 @@
 package com.fritzem.weatherstation.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fritzem.weatherstation.model.Report;
 import com.fritzem.weatherstation.repository.ReportRepository;
 import com.fritzem.weatherstation.repository.SensorRepository;
 import com.fritzem.weatherstation.model.Sensor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -77,15 +78,15 @@ public class SensorController {
      * @param sensorIds ~ list of sensor ids to include, leave blank to query all sensors
      */
     @PostMapping("/reports")
-    public List<Sensor> report(
+    public ResponseEntity<Object> report(
             @RequestBody JsonNode payload) {
 
+        Map<String, Object> response = new HashMap<>();
+
         List<Sensor> sensors;
-
-        ArrayList<Long> sensorIds = new ArrayList<>();
-
         JsonNode payloadIds = payload.get("sensorIds");
         if (payloadIds != null && payloadIds.isArray() && !payloadIds.isEmpty()) {
+            ArrayList<Long> sensorIds = new ArrayList<>();
             for (JsonNode jn : payloadIds) {
                 sensorIds.add(Long.parseLong(jn.toString()));
             }
@@ -94,11 +95,30 @@ public class SensorController {
             sensors = sensorRepository.findAll();
         }
 
-        return sensors;
+        ArrayList<Object> reports = new ArrayList();
+        for (Sensor s : sensors) {
+            List<Report> sensorReports = reportRepository.findAllBySensor(s);
+            if (!sensorReports.isEmpty()) {
+                Map<String, Object> sensorReport = new HashMap<>();
+                sensorReport.put("averageTemperature", reportRepository.averageTemperature(sensorReports));
+                sensorReport.put("averageHumidity", reportRepository.averageHumidity(sensorReports));
+                sensorReport.put("Sensor", s);
+                reports.add(sensorReport);
+            }
+        }
+        response.put("Reports", reports);
 
 
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
-
+    //        return new ResponseEntity<String>(sensors, HttpStatus.OK);
 
     }
+
+    @RequestMapping("/testQuery")
+    public Map<String, Object> test() {
+        List<Long> list = Arrays.asList(3L);
+        return sensorRepository.testQuery(list);
+    }
+
 }

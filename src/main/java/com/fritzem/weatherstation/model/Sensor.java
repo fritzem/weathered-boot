@@ -4,6 +4,9 @@ package com.fritzem.weatherstation.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 public class Sensor {
@@ -14,7 +17,6 @@ public class Sensor {
 
     private String country;
     private String city;
-
 
     protected Sensor() {} //For JPA
     public Sensor(String country, String city) {
@@ -29,6 +31,5 @@ public class Sensor {
         return country;
     }
     public String getCity()  { return city; }
-
 
 }
