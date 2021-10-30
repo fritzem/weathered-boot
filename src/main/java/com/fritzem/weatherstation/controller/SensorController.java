@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -95,9 +96,28 @@ public class SensorController {
             sensors = sensorRepository.findAll();
         }
 
-        ArrayList<Object> reports = new ArrayList();
+        JsonNode from = payload.get("from");
+        JsonNode to   = payload.get("to");
+
+        ArrayList<Object> reports = new ArrayList<>();
         for (Sensor s : sensors) {
-            List<Report> sensorReports = reportRepository.findAllBySensor(s);
+
+            List<Report> sensorReports;
+            if (from != null && to != null) {
+                sensorReports = reportRepository.findAllBySensorAndTimeBetween(s,
+                        Timestamp.valueOf(from.textValue()),
+                        Timestamp.valueOf(to.textValue()));
+            } else if (from != null) {
+                sensorReports = reportRepository.findAllBySensorAndTimeGreaterThanEqual(s,
+                        Timestamp.valueOf(from.textValue()));
+            } else if (to != null) {
+                sensorReports = reportRepository.findAllBySensorAndTimeLessThanEqual(s,
+                        Timestamp.valueOf(to.textValue()));
+            } else {
+                //Query all reports
+                sensorReports = reportRepository.findAllBySensor(s);
+            }
+
             if (!sensorReports.isEmpty()) {
                 Map<String, Object> sensorReport = new HashMap<>();
                 sensorReport.put("averageTemperature", reportRepository.averageTemperature(sensorReports));
