@@ -18,6 +18,8 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     List<Report> findAllBySensorAndTimeGreaterThanEqual(Sensor s, Timestamp from);
     List<Report> findAllBySensorAndTimeLessThanEqual(Sensor s, Timestamp to);
 
+    List<Report> findBySensorOrderByTimeDesc(Sensor s);
+
     @Query(
             "SELECT avg(r.temperature) FROM Report r WHERE r in :reports"
     )

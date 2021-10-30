@@ -114,15 +114,19 @@ public class SensorController {
                 sensorReports = reportRepository.findAllBySensorAndTimeLessThanEqual(s,
                         Timestamp.valueOf(to.textValue()));
             } else {
-                //Query all reports
-                sensorReports = reportRepository.findAllBySensor(s);
+                //Query most recent report
+                sensorReports = reportRepository.findBySensorOrderByTimeDesc(s);
+                if (!sensorReports.isEmpty()) {
+                    reports.add(sensorReports.get(0));
+                }
+                continue;
             }
 
             if (!sensorReports.isEmpty()) {
                 Map<String, Object> sensorReport = new HashMap<>();
+                sensorReport.put("Sensor", s);
                 sensorReport.put("averageTemperature", reportRepository.averageTemperature(sensorReports));
                 sensorReport.put("averageHumidity", reportRepository.averageHumidity(sensorReports));
-                sensorReport.put("Sensor", s);
                 reports.add(sensorReport);
             }
         }
