@@ -29,4 +29,14 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             "SELECT avg(r.humidity) FROM Report r WHERE r in :reports"
     )
     Double averageHumidity(List<Report> reports);
+
+    @Query(
+            "SELECT avg(r.windSpeed) FROM Report r WHERE r in :reports"
+    )
+    Double averageWindSpeed(List<Report> reports);
+
+    @Query(
+            "SELECT avg(r.atmPressure) FROM Report r WHERE r in :reports"
+    )
+    Double averageAtmPressure(List<Report> reports);
 }

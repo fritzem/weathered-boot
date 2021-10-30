@@ -56,10 +56,15 @@ public class SensorController {
         return sensor;
     }
 
+    Double parseHelper(String n) {
+        return n == null ? null : Double.parseDouble(n); }
+
     /*
      * Generates a report for a sensor
-     * @param temperature
-     * @param humidity
+     * @param temperature : double
+     * @param humidity : double
+     * @param windSpeed : double
+     * @param atmPressure : double
      */
     @PostMapping("/{id}/report")
     public Report report(
@@ -67,8 +72,10 @@ public class SensorController {
             @RequestBody Map<String, String> body) {
         Report report = new Report(
             sensorRepository.findById(Long.parseLong(id)),
-            Double.parseDouble(body.get("temperature")),
-            Double.parseDouble(body.get("humidity"))
+            parseHelper(body.get("temperature")),
+            parseHelper(body.get("humidity")),
+            parseHelper(body.get("windSpeed")),
+            parseHelper(body.get("atmPressure"))
         );
         reportRepository.save(report);
         return report;
@@ -77,6 +84,9 @@ public class SensorController {
     /*
      * Queries reports
      * @param sensorIds ~ list of sensor ids to include, leave blank to query all sensors
+     * @param from : Timestamp ~ filter out reports from before this timestamp
+     * @param to : Timestamp ~ filter out reports from after this timestamp
+     * Not sending either timestamp queries the most recent report
      */
     @PostMapping("/reports")
     public ResponseEntity<Object> report(
@@ -106,13 +116,9 @@ public class SensorController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        System.out.println(from + "\n" + to);
-
         ArrayList<Object> reports = new ArrayList<>();
         for (Sensor s : sensors) {
-
             List<Report> sensorReports;
-
 
             if (from != null && to != null) {
                 sensorReports = reportRepository.findAllBySensorAndTimeBetween(s, from, to);
@@ -132,8 +138,31 @@ public class SensorController {
             if (!sensorReports.isEmpty()) {
                 Map<String, Object> sensorReport = new HashMap<>();
                 sensorReport.put("Sensor", s);
-                sensorReport.put("averageTemperature", reportRepository.averageTemperature(sensorReports));
-                sensorReport.put("averageHumidity", reportRepository.averageHumidity(sensorReports));
+
+                JsonNode metrics = payload.get("metrics");
+                if (metrics == null || !payloadIds.isArray() || payloadIds.isEmpty()) {
+                    sensorReport.put("averageTemperature", reportRepository.averageTemperature(sensorReports));
+                    sensorReport.put("averageHumidity", reportRepository.averageHumidity(sensorReports));
+                    sensorReport.put("averageWindSpeed", reportRepository.averageWindSpeed(sensorReports));
+                    sensorReport.put("averageAtmPressure", reportRepository.averageAtmPressure(sensorReports));
+                } else {
+                    for (JsonNode jn : metrics) {
+                        switch (jn.asText().toUpperCase()) {
+                            case "TEMPERATURE":
+                                sensorReport.put("averageTemperature", reportRepository.averageTemperature(sensorReports));
+                                break;
+                            case "HUMIDITY":
+                                sensorReport.put("averageHumidity", reportRepository.averageHumidity(sensorReports));
+                                break;
+                            case "WINDSPEED":
+                                sensorReport.put("averageWindSpeed", reportRepository.averageWindSpeed(sensorReports));
+                                break;
+                            case "ATMPRESSURE":
+                                sensorReport.put("averageAtmPressure", reportRepository.averageAtmPressure(sensorReports));
+                                break;
+                        }
+                    }
+                }
                 reports.add(sensorReport);
             }
         }

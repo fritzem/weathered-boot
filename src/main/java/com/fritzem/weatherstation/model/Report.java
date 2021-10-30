@@ -18,15 +18,19 @@ public class Report {
     @CreationTimestamp
     private Timestamp time;
 
-    private double temperature;
-    private double humidity;
+    private Double temperature;
+    private Double humidity;
+    private Double windSpeed;
+    private Double atmPressure;
 
     protected Report() {}
 
-    public Report(Sensor sensor, double temperature, double humidity) {
+    public Report(Sensor sensor, Double temperature, Double humidity, Double windSpeed, Double atmPressure) {
         this.sensor = sensor;
         this.temperature = temperature;
         this.humidity = humidity;
+        this.windSpeed = windSpeed;
+        this.atmPressure = atmPressure;
     }
 
     public Sensor getSensor() {
@@ -37,12 +41,9 @@ public class Report {
         return time;
     }
 
-    public double getTemperature() {
-        return temperature;
-    }
-
-    public double getHumidity() {
-        return humidity;
-    }
+    public Double getTemperature() { return temperature; }
+    public Double getHumidity() { return humidity; }
+    public Double getWindSpeed() { return windSpeed; }
+    public Double getAtmPressure() { return atmPressure; }
 
 }
