@@ -33,6 +33,7 @@ public class Report {
         this.atmPressure = atmPressure;
     }
 
+    public long getId() { return id; }
     public Sensor getSensor() {
         return sensor;
     }

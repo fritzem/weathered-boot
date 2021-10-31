@@ -56,7 +56,7 @@ public class SensorController {
         return sensor;
     }
 
-    Double parseHelper(String n) {
+    private Double parseHelper(String n) {
         return n == null ? null : Double.parseDouble(n); }
 
     /*
@@ -171,12 +171,6 @@ public class SensorController {
             return new ResponseEntity<>("No reports found.", HttpStatus.OK);
         response.put("Reports", reports);
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @RequestMapping("/testQuery")
-    public Map<String, Object> test() {
-        List<Long> list = Arrays.asList(3L);
-        return sensorRepository.testQuery(list);
     }
 
 }

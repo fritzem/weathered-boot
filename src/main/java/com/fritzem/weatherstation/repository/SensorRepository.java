@@ -11,12 +11,12 @@ public interface SensorRepository extends JpaRepository<Sensor, Long> {
 
     Sensor findById(long id);
 
-
+    /**
     @Query(
             "SELECT s, r FROM Sensor s \n" +
             "INNER JOIN Report r ON s.id=r.sensor.id \n" +
             "WHERE s.id in :sensors"
     )
-    Map<String, Object> testQuery(List<Long> sensors);
+    Map<String, Object> testQuery(List<Long> sensors); */
 
 }
