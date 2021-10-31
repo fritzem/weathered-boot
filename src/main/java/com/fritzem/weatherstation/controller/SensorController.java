@@ -140,7 +140,7 @@ public class SensorController {
                 sensorReport.put("Sensor", s);
 
                 JsonNode metrics = payload.get("metrics");
-                if (metrics == null || !payloadIds.isArray() || payloadIds.isEmpty()) {
+                if (metrics == null || !metrics.isArray() || metrics.isEmpty()) {
                     sensorReport.put("averageTemperature", reportRepository.averageTemperature(sensorReports));
                     sensorReport.put("averageHumidity", reportRepository.averageHumidity(sensorReports));
                     sensorReport.put("averageWindSpeed", reportRepository.averageWindSpeed(sensorReports));
@@ -168,7 +168,7 @@ public class SensorController {
         }
 
         if (reports.isEmpty())
-            return new ResponseEntity<>("No reports found.", HttpStatus.OK);
+            return new ResponseEntity<>("No reports found.", HttpStatus.NO_CONTENT);
         response.put("Reports", reports);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
